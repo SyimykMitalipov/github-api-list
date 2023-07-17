@@ -1,0 +1,26 @@
+.comment {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.repoComment {
+    display: flex;
+    > button {
+        width: 64px;
+        height: 54px;
+        background-color: var(--blue-main);
+    }
+}
+.commentInput {
+    width: 346px;
+    height: 54px;
+}
+
+
+.removeButton {
+    width: 150px;
+    height: 30px;
+    color: var(--white-color);
+    background-color: var(--red-primary);
+}

@@ -2,10 +2,10 @@ import { IRepo } from 'entities/SearchResults/types/searchResultsSchema';
 import classes from './RepoCard.module.scss'
 import star from 'shared/assets/icons/star.svg';
 import watches from 'shared/assets/icons/watch.svg'
-import edit from 'shared/assets/icons/edit.svg';
 import { Dispatch, SetStateAction, FC } from 'react';
+import { Comment } from '../Comment/Comment';
 
-interface IComment {
+export interface IComment {
   id: number,
   comment: string,
 }
@@ -13,11 +13,11 @@ interface IComment {
 
 interface IRepoCardProps {
   repo: IRepo,
-  setComments:  Dispatch<SetStateAction<IComment>>,
+  setComments:  Dispatch<SetStateAction<Record<number, string>>>,
   comments: Record<number, string>;
 }
 
-type FormFields = {
+export type FormFields = {
   comment: HTMLInputElement;
 };
 
@@ -31,6 +31,15 @@ export const RepoCard: FC<IRepoCardProps> = ({ repo, setComments, comments}) => 
       localStorage.setItem('comments', JSON.stringify(newComments))
       return newComments;
     })
+  }
+
+  const handleDeleteComment = (commentId: number) => {
+     setComments((prevComments) => {
+      delete prevComments[commentId]
+      localStorage.setItem('comments', JSON.stringify(prevComments))
+      return {...prevComments};
+     })
+   
   }
   return (
     <div className={classes.repoCard}>
@@ -54,19 +63,12 @@ export const RepoCard: FC<IRepoCardProps> = ({ repo, setComments, comments}) => 
               <p>{repo.forks}</p>
             </div>
           </div>
-            {comments[repo?.id] 
-            ? <p>{comments[repo?.id]}</p> 
-            : <form className={classes.repoComment} onSubmit={handleSubmit}>
-            <input 
-              className={classes.commentInput} 
-              placeholder='Комментарий к проекту' 
-              name='comment'
-              type="text" 
-             />
-            <button>
-              <img src={edit} alt="" />
-            </button>
-        </form> }
+          <Comment
+            onDelete={handleDeleteComment}
+            repo={repo} 
+            comments={comments}
+            handleSubmit={handleSubmit}
+           />
     </div>
   )
 };
